@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico" type="../public/assets/monochrome-logo.png">
     <title>Standard</title>
 </head>
 
@@ -51,53 +52,61 @@
                 console.log(orderId);
                 $("button").show();
             });
-        });
 
-        var options = {
-            "key": "rzp_test_YYgJF1rM55uHbC",
-            "amount": "50000",
-            "currency": "INR",
-            "name": "UCD",
-            "description": "Test Transaction",
-            "image": "https://ucdupes.org/img/logo.png",
-            "order_id": orderId,
-            "handler": function (response) {
-                alert(response.razorpay_payment_id);
-                alert(response.razorpay_order_id);
-                alert(response.razorpay_signature);
-                console.log(response);
-                var settings = {
-                    "url": "/api/payment/verify",
-                    "method": "POST",
-                    "timeout": 0,
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "data": JSON.stringify({ response }),
+
+            var options = {
+                "key": "<%=key%>",
+                "amount": "50000",
+                "currency": "INR",
+                "name": "UCD",
+                "description": "Test Transaction",
+                "image": "https://ucdupes.org/img/logo.png",
+                "order_id": orderId,
+                "handler": function (response) {
+                    alert(response.razorpay_payment_id);
+                    // alert(response.razorpay_order_id);
+                    // alert(response.razorpay_signature);
+                    console.log(response);
+                    // var settings = {
+                    //     "url": "/api/payment/verify",
+                    //     "method": "POST",
+                    //     "timeout": 0,
+                    //     "headers": {
+                    //         "Content-Type": "application/json"
+                    //     },
+                    //     "data": JSON.stringify({ response }),
+                    // }
+                },
+                "theme": {
+                    "color": "#99cc81"
                 }
-            },
-            "theme": {
-                "color": "#99cc81"
+            };
+
+
+
+            var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+                console.log(response)
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
+            });
+
+
+            document.getElementById('rzp-button1').onclick = function (e) {
+                rzp1.open();
+                e.preventDefault();
             }
-        };
-
-
-        var rzp1 = new Razorpay(options);
-        rzp1.on('payment.failed', function (response) {
-            alert(response.error.code);
-            alert(response.error.description);
-            alert(response.error.source);
-            alert(response.error.step);
-            alert(response.error.reason);
-            alert(response.error.metadata.order_id);
-            alert(response.error.metadata.payment_id);
         });
 
 
-        document.getElementById('rzp-button1').onclick = function (e) {
-            rzp1.open();
-            e.preventDefault();
-        }
+
+
+
 
     </script>
 </body>

@@ -15,7 +15,7 @@ app.set("views", "./views");
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/payments", (req, res) => {
-  res.render("standard");
+  res.render("standard", { key: process.env.KEY_ID });
   res.end();
 });
 
@@ -40,27 +40,27 @@ app.post("/payments/order", (req, res) => {
   });
 });
 
-app.post("/api/payment/verify", (req, res) => {
-  let body =
-    req.body.response.razorpay_order_id +
-    "|" +
-    req.body.response.razorpay_payment_id;
-  var crypto = require("crypto");
-  var expectedSignature = crypto
-    .createHmac("sha256", process.env.KEY_SECRET)
-    .update(body.toString())
-    .digest("hex");
+// app.post("/api/payment/verify", (req, res) => {
+//   let body =
+//     req.body.response.razorpay_order_id +
+//     "|" +
+//     req.body.response.razorpay_payment_id;
+//   var crypto = require("crypto");
+//   var expectedSignature = crypto
+//     .createHmac("sha256", process.env.KEY_SECRET)
+//     .update(body.toString())
+//     .digest("hex");
 
-  console.log("sig received ", req.body.response.razorpay_signature);
+//   console.log("sig received ", req.body.response.razorpay_signature);
 
-  console.log("sig generated ", expectedSignature);
+//   console.log("sig generated ", expectedSignature);
 
-  var response = { signatureIsValid: "false" };
+//   var response = { signatureIsValid: "false" };
 
-  if (expectedSignature === req.body.response.razorpay_signature)
-    response = { signatureIsValid: "true" };
-  res.send(response);
-});
+//   if (expectedSignature === req.body.response.razorpay_signature)
+//     response = { signatureIsValid: "true" };
+//   res.send(response);
+// });
 
 app.listen(PORT, () => {
   console.log(`listining to port ${PORT}`);
