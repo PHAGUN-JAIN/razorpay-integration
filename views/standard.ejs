@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standard</title>
+</head>
+
+<body>
+    <h1>
+        pay your treasure for grand rick roll
+    </h1>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?start=1"
+        title="YouTube video player" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+    </iframe><br />
+    <h2>
+        Pay 500/-
+    </h2>
+    <form action="" method="post">
+        <input type="email" name="mail" id="mail" placeholder="gib ur email id">
+        <!-- <input type="submit" value="PAY"> -->
+    </form>
+
+    <!-- req.body.amount * 100 -->
+
+    <button id="rzp-button1">Pay</button>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        var orderId;
+        $(document).ready(function () {
+            var settings = {
+                "url": "/payments/order",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "amount": "50000"
+                }),
+            };
+
+            //creates new orderId everytime
+            $.ajax(settings).done(function (response) {
+                orderId = response.orderId;
+                console.log(orderId);
+                $("button").show();
+            });
+        });
+
+        var options = {
+            "key": "rzp_test_YYgJF1rM55uHbC",
+            "amount": "50000",
+            "currency": "INR",
+            "name": "UCD",
+            "description": "Test Transaction",
+            "image": "https://ucdupes.org/img/logo.png",
+            "order_id": orderId,
+            "handler": function (response) {
+                alert(response.razorpay_payment_id);
+                alert(response.razorpay_order_id);
+                alert(response.razorpay_signature);
+                console.log(response);
+                var settings = {
+                    "url": "/api/payment/verify",
+                    "method": "POST",
+                    "timeout": 0,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "data": JSON.stringify({ response }),
+                }
+            },
+            "theme": {
+                "color": "#99cc81"
+            }
+        };
+
+
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response) {
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+        });
+
+
+        document.getElementById('rzp-button1').onclick = function (e) {
+            rzp1.open();
+            e.preventDefault();
+        }
+
+    </script>
+</body>
+
+</html>
