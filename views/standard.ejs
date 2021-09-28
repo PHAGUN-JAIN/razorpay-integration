@@ -6,6 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="favicon.ico" type="../public/assets/monochrome-logo.png">
+    <!-- <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self' https://*.razorpay.com data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *"> -->
+
+
     <title>Standard</title>
 </head>
 
@@ -23,6 +27,7 @@
     </h2>
     <form action="" method="post">
         <input type="email" name="mail" id="mail" placeholder="gib ur email id">
+        <p>40</p>
         <!-- <input type="submit" value="PAY"> -->
     </form>
 
@@ -51,57 +56,76 @@
                 orderId = response.orderId;
                 console.log(orderId);
                 $("button").show();
-            });
 
 
-            var options = {
-                "key": "<%=key%>",
-                "amount": "50000",
-                "currency": "INR",
-                "name": "UCD",
-                "description": "Test Transaction",
-                "image": "https://ucdupes.org/img/logo.png",
-                "order_id": orderId,
-                "handler": function (response) {
-                    alert(response.razorpay_payment_id);
-                    // alert(response.razorpay_order_id);
-                    // alert(response.razorpay_signature);
-                    console.log(response);
-                    // var settings = {
-                    //     "url": "/api/payment/verify",
-                    //     "method": "POST",
-                    //     "timeout": 0,
-                    //     "headers": {
-                    //         "Content-Type": "application/json"
-                    //     },
-                    //     "data": JSON.stringify({ response }),
-                    // }
-                },
-                "theme": {
-                    "color": "#99cc81"
+
+
+
+
+
+
+                var options = {
+                    "key": "<%=key%>",
+                    "amount": "50000",
+                    "currency": "INR",
+                    "name": "UCD",
+                    "description": "Test Transaction",
+                    "image": "https://ucdupes.org/img/logo.png",
+                    "order_id": orderId,
+                    "handler": function (response) {
+                        alert(response.razorpay_payment_id);
+                        alert(response.razorpay_order_id);
+                        alert(response.razorpay_signature);
+                        console.log(response);
+                        var settings = {
+                            "url": "/api/payment/verify",
+                            "method": "POST",
+                            "timeout": 0,
+                            "headers": {
+                                "Content-Type": "application/json"
+                            },
+                            "data": JSON.stringify({ response }),
+                        }
+                    },
+                    "theme": {
+                        "color": "#99cc81"
+                    }
+                };
+
+
+
+                var rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response) {
+                    console.log(response)
+                    alert(response.error.code);
+                    alert(response.error.description);
+                    alert(response.error.source);
+                    alert(response.error.step);
+                    alert(response.error.reason);
+                    alert(response.error.metadata.order_id);
+                    alert(response.error.metadata.payment_id);
+                });
+
+
+                document.getElementById('rzp-button1').onclick = function (e) {
+                    rzp1.open();
+                    e.preventDefault();
                 }
-            };
 
 
 
-            var rzp1 = new Razorpay(options);
-            rzp1.on('payment.failed', function (response) {
-                console.log(response)
-                alert(response.error.code);
-                alert(response.error.description);
-                alert(response.error.source);
-                alert(response.error.step);
-                alert(response.error.reason);
-                alert(response.error.metadata.order_id);
-                alert(response.error.metadata.payment_id);
+
+
             });
 
 
-            document.getElementById('rzp-button1').onclick = function (e) {
-                rzp1.open();
-                e.preventDefault();
-            }
+
+
+
+
+
         });
+
 
 
 
