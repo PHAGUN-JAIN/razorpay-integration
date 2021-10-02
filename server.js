@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const Razorpay = require("razorpay");
+const shortid = require("shortid");
 
 var instance = new Razorpay({
   key_id: process.env.KEY_ID,
@@ -25,7 +26,7 @@ app.post("/payments/order", async (req, res) => {
   var options = {
     amount: 50000, // amount in the smallest currency unit
     currency: "INR",
-    receipt: "order_rcptid_11",
+    receipt: shortid.generate(),
     payment_capture: 1,
   };
 
